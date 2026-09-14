@@ -37,7 +37,7 @@ from someone qualified.
 | Loading states | Partly | Known defect: the dashboard and insights screens show numbers before the data has loaded, so a confident but wrong cost per kilometre flashes up. Recorded in the August audit. |
 | Form error states | Partly | Some forms have them, not all. |
 | Favicon | Partly | `favicon.svg` exists. |
-| **Installable as an app** | **Broken** | `manifest.webmanifest` points at `icon-192.png` and `icon-512.png`. Neither file exists, and nothing links the manifest from the page. So the app cannot be added to a home screen at all, despite being built as an installable app from the start. Two missing image files and one line in the page head. |
+| **Installable as an app** | **Fixed 2026-09-14, needs testing on a real phone** | The two missing icon files were generated from the existing mark, an `apple-touch-icon` was added because iOS ignores the manifest icons, the manifest is now linked from the page, and the iOS standalone tags were added. Untested on an actual iPhone until the next deploy. |
 
 ## Already done
 

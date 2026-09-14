@@ -79,6 +79,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { name: "theme-color", content: "#16150F" },
+      // Installability. Without these iOS will not open RevTab as a standalone
+      // app from the home screen, which is what the at-the-pump flow relies on.
+      { name: "mobile-web-app-capable", content: "yes" },
+      { name: "apple-mobile-web-app-capable", content: "yes" },
+      { name: "apple-mobile-web-app-title", content: "RevTab" },
+      { name: "apple-mobile-web-app-status-bar-style", content: "default" },
       { title: "RevTab — Smart Car Costs Calculator" },
       { name: "description", content: "RevTab helps you get insights into how much you actually spend on driving, maintaining and running your car." },
       { name: "author", content: "Lovable" },
@@ -92,6 +98,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     links: [
       { rel: "stylesheet", href: appCss },
       { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
+      // The manifest was never linked, so the app declared itself installable
+      // while being impossible to install. iOS ignores the manifest icons and
+      // uses apple-touch-icon instead, so both are needed.
+      { rel: "manifest", href: "/manifest.webmanifest" },
+      { rel: "apple-touch-icon", href: "/apple-touch-icon.png" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {

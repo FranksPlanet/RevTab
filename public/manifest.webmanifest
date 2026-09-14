@@ -1,7 +1,7 @@
 {
   "name": "RevTab",
   "short_name": "RevTab",
-  "description": "Know what every kilometer really costs.",
+  "description": "Know what every kilometre really costs.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#FAFAF7",
