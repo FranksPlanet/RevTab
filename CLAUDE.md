@@ -72,12 +72,17 @@ Three copies that are expected to agree:
 2. GitHub: `https://github.com/FranksPlanet/carun` (public)
 3. Frank's local clone
 
-**A trap worth knowing:** the local checkout is at
-`~/Documents/GitHub/RevTab/carun`. The git repository is the `carun` folder, not
-`RevTab`. The folder above it is not version controlled, and in September 2026
-two important reports were found sitting there, outside git, invisible to
-everyone. Check which folder you are in before concluding a file is missing or
-untracked.
+The local checkout is at `~/Desktop/RevTab`, and that folder **is** the git
+repository. Everything to do with this project lives inside it.
+
+It did not always. Until 14 September 2026 the code sat in
+`~/Documents/GitHub/RevTab/carun`, with untracked files in the folder above it.
+Two important reports were found stranded there, outside git and invisible to
+everyone. The layout was flattened specifically so that cannot happen again:
+there is no longer an "outside the repo but next to it" place to lose things in.
+
+Note the GitHub repository is still called `carun` while the folder is called
+`RevTab`. That is only a name, and nothing depends on it.
 
 ## How to work with Lovable
 
@@ -195,6 +200,17 @@ That has not started.
   answers the engine must still produce for it.
 - `scripts/verify-account-deletion.sql` is the only check that genuinely proves
   account deletion works. It has to be run by hand.
-- Two reports from earlier sessions, `AUDIT-2026-08-12.md` and `AFK-REPORT.md`,
-  currently sit in the folder **above** the repository and are not tracked. They
-  should be moved in. Principle III exists because of them.
+- `AUDIT-2026-08-12.md` is a full security and correctness audit from August 2026,
+  with every finding marked by how thoroughly it was verified.
+- `AFK-REPORT.md` is the record of what was fixed on 25 August and 3 September,
+  including two defects that passed the tests and were caught only by reading.
+
+  **Both are deliberately excluded from git and must stay that way.** They list
+  weaknesses that are still open, and the GitHub repository is public. Frank
+  decided on 14 September 2026 to keep them on his machine only. Do not commit
+  them, and do not treat their untracked status as an oversight to tidy up.
+
+  This is a knowing exception to Principle III, and it carries the risk that
+  principle exists to prevent: these two files now live in exactly one place. If
+  the repository is ever made private, commit them immediately. Until then they
+  need a backup that is not this laptop.

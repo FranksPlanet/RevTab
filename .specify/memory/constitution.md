@@ -123,7 +123,7 @@ expected to agree. When they do not, say so before doing anything else.
 **Publishing is gated.** Work can be built freely. Deploying to the live app is
 Frank's decision alone and is never done without him saying so.
 
-**Running the tests.** `npx vitest run` from inside the `carun` folder. Note
+**Running the tests.** `npx vitest run` from inside the project folder. Note
 that `npm ci` does not work: `package-lock.json` is out of sync with
 `package.json`, because the project really builds with bun. Use
 `npm install --no-save --no-package-lock` to install dependencies without

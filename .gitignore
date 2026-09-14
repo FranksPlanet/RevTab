@@ -41,3 +41,11 @@ dist-ssr
 .env.production
 .env.test
 !.env.example
+
+# Claude Code local settings (personal, per-machine)
+.claude/settings.local.json
+
+# Private project records: kept on disk, deliberately not published
+# (the GitHub repo is public and these list open weaknesses)
+AFK-REPORT.md
+AUDIT-2026-08-12.md
