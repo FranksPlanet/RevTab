@@ -40,7 +40,11 @@ follow. That was a communication failure, not a productivity failure.
   a comma. The abstract version had failed twice.
 - When he says he does not understand, that is a defect in the output. Rewrite
   it differently. Do not repeat it more slowly.
-- Be brief. No preamble.
+- Be brief. Notes, not essays. Frank reads slower than an assistant generates, so
+  length is a real cost. Lead with the answer, use short lines, stay to one
+  screen unless he asked for a document. Global version of this rule lives in
+  `~/.claude/CLAUDE.md`.
+- Do not narrate the plan, do the thing, then summarise it. Pick one.
 - Disagree out loud. He asks for this directly and means it. He asked to be
   challenged on the word "restart" and was right to.
 - Never use the em dash character, anywhere, including in code comments and docs.
