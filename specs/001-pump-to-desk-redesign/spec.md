@@ -56,7 +56,12 @@ quantity, price, date and odometer are all correct without typing any of them.
 5. Given any value was guessed rather than read with confidence, when it is shown
    for confirmation, then it is visually marked as a guess, consistent with the
    app's existing treatment of estimates.
-6. Given the driver has more than one car, when they open the log flow, then the
+6. Given the confirmation screen, when the driver looks below the filled-in
+   values, then the photograph they just took is shown, so they can check what
+   was read against what is actually printed without leaving the screen.
+7. Given the receipt text is small, when the driver needs a closer look, then the
+   photograph can be enlarged.
+8. Given the driver has more than one car, when they open the log flow, then the
    car is either already correct or chosen in a single tap.
 
 ### User Story 2 - One receipt, several things bought (Priority: P2)
@@ -86,6 +91,10 @@ category, and that the totals still add up to the receipt total.
    receipt total, and if they do not, the driver is told before saving.
 4. Given the driver does not care about the detail right now, when they choose to
    save it as a single entry instead, then that remains possible in one tap.
+5. Given several items were separated out, when the driver checks them, then the
+   photograph is visible alongside the list, because verifying a split is harder
+   than verifying a single number and guessing from memory is what this feature
+   exists to avoid.
 
 ### User Story 3 - Reviewing at a desk (Priority: P3)
 
@@ -210,6 +219,11 @@ has been scanned and attached.
 - **FR-004**: The app MUST visually distinguish values it guessed from values the
   driver entered or confirmed, and MUST carry that distinction through to any
   figure calculated from them.
+- **FR-004a**: The app MUST show the photograph on the confirmation screen,
+  below the extracted values, and MUST allow it to be enlarged. Checking a
+  machine's reading against the paper is the only way the driver can tell whether
+  it was right, and asking them to remember what the receipt said defeats the
+  point of showing values for confirmation at all.
 - **FR-005**: The app MUST allow any extracted value to be corrected without
   retaking the photograph.
 - **FR-006**: The app MUST continue the capture when the odometer cannot be read,
@@ -341,6 +355,24 @@ from anywhere.
   installed app, so the session is shared and the problem does not arise. Worth
   adding when capture has an address, since it costs a few lines. It does nothing
   on iPhone, which is what Frank uses.
+
+## Showing the photograph while confirming
+
+Added on Frank's suggestion, and it costs almost nothing. The photograph is
+already on the device by the decision above, so displaying it involves no upload,
+no server round trip and no storage question.
+
+It also closes a gap in the honesty rule. The app marks guessed values as
+guesses, which tells the driver to be careful, but gives them nothing to be
+careful *with*. Putting the paper next to the numbers is what turns a warning
+into something actionable.
+
+**A better version, if it ever proves necessary.** Highlight the exact spot on
+the photograph each value came from, so a wrong figure can be traced to the line
+it was misread from. Genuinely useful for a mixed receipt with six items. It
+needs the scanner to report *where* it found each value, not just what it found,
+so it is a real increase in scope. Not required now, worth knowing the option
+exists.
 
 ## Risks
 
