@@ -198,9 +198,11 @@ has been scanned and attached.
 
 - **FR-001**: The app MUST offer a single, obvious action that goes straight to
   the camera, reachable in one tap from opening the app.
-- **FR-001a**: The app MUST support being opened directly into capture from the
-  phone's home screen, bypassing every other screen. See the note below on what
-  is actually possible per platform.
+- **FR-001a**: Capture MUST be a page with its own address, reachable directly
+  without passing through any other screen. Today it is a dialog on top of the
+  expenses list and therefore cannot be linked to at all.
+- **FR-001b**: The app MUST keep a LOG action visible at all times on a phone, so
+  capture is never more than one tap away.
 - **FR-002**: The app MUST extract fuel quantity, total price, date and odometer
   reading from one photograph containing both a receipt and an odometer.
 - **FR-003**: The app MUST show every extracted value for confirmation before
@@ -297,37 +299,48 @@ Recorded where a reasonable default was chosen rather than asked about.
 
 ## Opening straight into capture
 
-Frank's idea: a separate icon on the phone's home screen that goes straight to
-the camera, rather than opening the app and then tapping. At a pump this removes
-the only remaining step.
+Frank's idea was a second icon on the home screen going straight to the camera.
+**Tested on an iPhone 17 Pro on 2026-09-14. It does not work, and the reason is
+not fixable by us.**
 
-This is worth building and is mostly free, but what is possible differs by phone,
-and that difference should be known before it is designed.
+What was found:
 
-**On iPhone, which is what Frank uses.** Adding a page to the home screen from
-Safari saves whatever address is currently open. So visiting the capture screen
-and adding *that* to the home screen produces a second icon that opens straight
-into it. Two icons, one app: RevTab, and LOG.
+- Installing RevTab to the home screen works properly. It opens standalone with
+  no address bar and the icon looks right.
+- Adding a *second* page as its own icon produces a **separate app with its own
+  storage**. It asks for a login again, because it cannot see the session
+  belonging to the first icon.
+- After logging in, it redirects to the dashboard rather than the page that was
+  added.
+- Reopening it lands on the expenses list, not on the add-expense dialog.
 
-**On Android.** A manifest can declare shortcuts, which appear when the app icon
-is held down. That gives a LOG option in a menu rather than its own icon.
-Different, still one gesture.
+iOS gives each home screen web app its own storage container. Two icons means two
+signed-in states. Being asked for a password while sitting at a pump is worse
+than the extra tap the idea was meant to remove, so **this approach is dropped**.
 
-**The unknown that must be tested before relying on it.** Whether two home screen
-icons from the same app share a signed-in session on iOS. If they do not, the LOG
-icon would ask for a password at the pump, which destroys the entire point. This
-needs trying on a real iPhone before any work is planned around it, and the
-answer decides whether this is a small addition or not worth doing.
+### What the test revealed that matters more
 
-**A cheaper thing that works regardless.** The LOG action being permanently
-visible inside the app, rather than buried, gets most of the benefit with none of
-the platform uncertainty. It is also the same object as the sticky mobile call to
-action on the pre-launch checklist, and should not be built twice.
+The add-expense flow **has no address of its own**. It is a dialog that opens on
+top of the expenses list, so there is nothing to link to, bookmark, or point an
+icon at. Even with a shared session there would have been no destination.
 
-**Prerequisite.** None of this works today. The app declares itself installable
-but points at two icon files that do not exist, and nothing links the manifest
-from the page, so it cannot be added to a home screen at all. That has to be
-fixed first, and it is recorded on the pre-launch checklist.
+That is a real design constraint and it applies regardless of home screen icons:
+capture must become a page with its own address before it can be reached directly
+from anywhere.
+
+### What replaces it
+
+- **Capture gets its own address.** A real page, linkable, shareable, and
+  reachable without passing through the dashboard. This is required by P1 anyway.
+- **A permanently visible LOG button inside the app.** One installed app, one
+  session, one tap. Most of the benefit, none of the platform problem. It is the
+  same object as the sticky mobile call to action on the pre-launch checklist and
+  must not be built twice.
+- **Android keeps the original idea, for free.** A manifest can declare shortcuts
+  that appear on a long press of the app icon. Those run inside the same
+  installed app, so the session is shared and the problem does not arise. Worth
+  adding when capture has an address, since it costs a few lines. It does nothing
+  on iPhone, which is what Frank uses.
 
 ## Risks
 
