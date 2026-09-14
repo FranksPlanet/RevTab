@@ -139,6 +139,41 @@ the cost per kilometre shown on the dashboard.
 5. Given a return journey, when the driver indicates as much, then the distance
    used is doubled without them having to do the arithmetic.
 
+### User Story 5 - Logging where there is no signal (Priority: P5)
+
+Rural forecourts and underground car parks frequently have no usable connection.
+The driver photographs the receipt as usual, fills in the numbers by hand because
+nothing can be scanned without a server, and drives away with a complete entry.
+The photograph uploads and is scanned whenever the connection returns.
+
+**Why this priority**: It removes the one situation where the app simply cannot
+be used, but it is worth building only once the normal path is proven. It is also
+the largest piece of work here, and an earlier attempt at offline support was
+abandoned and deleted, so it starts from nothing.
+
+**Independent Test**: Put the phone in aeroplane mode, log a complete fill-up,
+turn the connection back on, and confirm the entry is intact and the photograph
+has been scanned and attached.
+
+**Acceptance Scenarios**:
+
+1. Given there is no connection, when the driver opens the capture flow, then
+   they are told plainly that scanning is unavailable and are offered manual
+   entry, rather than being blocked or left waiting.
+2. Given manual entry offline, when the driver saves, then the entry is complete
+   and counts towards their figures immediately, without waiting for a
+   connection.
+3. Given a queued photograph, when the connection returns, then it uploads and is
+   scanned without the driver having to remember anything.
+4. Given the scan later disagrees with what the driver typed, when that happens,
+   then the driver is shown the difference and decides, and their typed value is
+   never silently overwritten.
+5. Given an entry was made offline with an odometer reading, and other entries
+   have been logged since, when it syncs, then the app checks the reading still
+   makes sense in sequence and asks rather than corrupting the distance figures.
+6. Given something is still queued, when the driver looks at the app, then it is
+   visible that something is waiting, rather than being silently pending.
+
 ### Edge Cases
 
 - The photograph is too dark, blurred, or the receipt is folded. The driver is
@@ -184,6 +219,15 @@ the cost per kilometre shown on the dashboard.
 - **FR-012**: The app MUST estimate the cost of a journey from a distance the
   driver enters, using that car's own cost per kilometre, and MUST make clear
   which cost basis was used and that the result is an estimate. (P4)
+- **FR-015**: The app MUST allow a complete entry to be made and saved without a
+  connection, using manual entry in place of scanning. (P5)
+- **FR-016**: The app MUST queue any photograph taken offline and scan it when a
+  connection returns, without requiring the driver to act. (P5)
+- **FR-017**: The app MUST NOT overwrite a value the driver typed with one a
+  later scan produced. Where they disagree, the driver decides. (P5)
+- **FR-018**: The app MUST re-check a queued odometer reading against readings
+  logged since, before accepting it. (P5)
+- **FR-019**: The app MUST make queued, unsynced items visible to the driver. (P5)
 - **FR-013**: All figures introduced by this feature MUST be formatted through
   the app's single formatting layer, per Constitution Principle II.
 - **FR-014**: After a successful log, the app MUST show the driver their updated
@@ -201,13 +245,20 @@ the cost per kilometre shown on the dashboard.
 
 All three were answered by Frank on 2026-09-14.
 
-**Does capture have to work without signal? No, not for now.** It would be
-welcome later. So P1 assumes a working connection, and the driver must be told
-clearly and immediately when there is none, rather than losing the photograph or
-believing something was saved when it was not. Offline capture is recorded under
-Future Work rather than being designed in now. Worth knowing the history: an
-earlier attempt at offline support was abandoned and its code deleted, so this
-would be built from nothing.
+**Does capture have to work without signal? Yes, but last.** It is User Story 5,
+the lowest priority here. P1 through P4 assume a connection and must say so
+plainly when there is none.
+
+The queueing itself is ordinary work. The difficulty is that scanning happens on
+the server, so offline there is nothing to confirm, which is exactly what P1
+promises. The approach chosen keeps that promise: offline, the driver types the
+numbers and the entry is complete straight away, with the photograph queued for
+scanning later. Scanning becomes a convenience rather than something the entry
+depends on. This reuses the manual path P1 already needs for an unreadable
+odometer.
+
+Worth knowing the history: an offline queue was built in June 2026 and deleted in
+August as dead code. It has been started and abandoned once already.
 
 **Is a trip stored, or worked out? Neither.** A trip is not a record at all. It
 is a calculator: distance in, estimated cost out, based on the car's real cost
@@ -216,10 +267,11 @@ needs to know whether the trip actually happened. This is dramatically smaller
 than either option originally offered and is the reason P4 moved from
 "what did that cost" to "what would that cost".
 
-**Are receipt photographs kept? On the device only, not on the server.** This
-avoids putting images of other people's payment slips, which can carry the last
-digits of a card, into server storage. The honest limits are recorded under
-Risks below, because device storage is not an archive.
+**Are receipt photographs kept? On the device only, for now.** This keeps images
+of payment slips, which can carry the last digits of a card, out of server
+storage. Letting the driver opt in to uploading them is wanted later and is
+recorded under Future Work. The limits of device storage are under Risks, because
+it is not an archive.
 
 ## Assumptions
 
@@ -251,8 +303,16 @@ decision has to be revisited rather than quietly relied upon.
 
 Deliberately not in this feature, recorded so it is not lost.
 
-- **Capture without a signal.** Photograph now, queue, upload when back in range.
-  Wanted, not required yet.
+- **Uploading receipt photographs off the device.** P2 keeps them on the phone
+  only. Letting the driver opt in to storing them in the cloud, so they survive a
+  lost phone and appear on a laptop, is wanted later and is a plausible paid
+  feature, since cloud storage is the part that costs real money.
+
+  Use the word "upload" rather than "sync" deliberately. Uploading a file and
+  making it visible elsewhere is modest work. Synchronising means two devices
+  changing the same thing, conflicts, and deletions propagating, which is a much
+  larger job. Nobody should build the second while thinking they asked for the
+  first.
 - **Reading an odometer photographed on its own**, without a receipt.
 
 ## Success Criteria
