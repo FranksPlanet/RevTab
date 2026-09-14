@@ -41,6 +41,9 @@ quantity, price, date and odometer are all correct without typing any of them.
 
 1. Given the driver is signed in with one car, when they tap the log button,
    then the camera opens directly, with no menu or form in between.
+1a. Given the driver has added a dedicated logging icon to their phone's home
+   screen, when they tap it, then the camera opens immediately, without passing
+   through the dashboard first.
 2. Given a photograph containing a fuel receipt and a legible odometer, when the
    scan completes, then the fuel quantity, total price, date and odometer
    reading are all filled in and shown for confirmation before anything is saved.
@@ -195,6 +198,9 @@ has been scanned and attached.
 
 - **FR-001**: The app MUST offer a single, obvious action that goes straight to
   the camera, reachable in one tap from opening the app.
+- **FR-001a**: The app MUST support being opened directly into capture from the
+  phone's home screen, bypassing every other screen. See the note below on what
+  is actually possible per platform.
 - **FR-002**: The app MUST extract fuel quantity, total price, date and odometer
   reading from one photograph containing both a receipt and an odometer.
 - **FR-003**: The app MUST show every extracted value for confirmation before
@@ -288,6 +294,40 @@ Recorded where a reasonable default was chosen rather than asked about.
   reproduce before it is considered safe.
 - The existing Expenses screen remains for entries that are not made at a pump.
 - Sign-in is unchanged.
+
+## Opening straight into capture
+
+Frank's idea: a separate icon on the phone's home screen that goes straight to
+the camera, rather than opening the app and then tapping. At a pump this removes
+the only remaining step.
+
+This is worth building and is mostly free, but what is possible differs by phone,
+and that difference should be known before it is designed.
+
+**On iPhone, which is what Frank uses.** Adding a page to the home screen from
+Safari saves whatever address is currently open. So visiting the capture screen
+and adding *that* to the home screen produces a second icon that opens straight
+into it. Two icons, one app: RevTab, and LOG.
+
+**On Android.** A manifest can declare shortcuts, which appear when the app icon
+is held down. That gives a LOG option in a menu rather than its own icon.
+Different, still one gesture.
+
+**The unknown that must be tested before relying on it.** Whether two home screen
+icons from the same app share a signed-in session on iOS. If they do not, the LOG
+icon would ask for a password at the pump, which destroys the entire point. This
+needs trying on a real iPhone before any work is planned around it, and the
+answer decides whether this is a small addition or not worth doing.
+
+**A cheaper thing that works regardless.** The LOG action being permanently
+visible inside the app, rather than buried, gets most of the benefit with none of
+the platform uncertainty. It is also the same object as the sticky mobile call to
+action on the pre-launch checklist, and should not be built twice.
+
+**Prerequisite.** None of this works today. The app declares itself installable
+but points at two icon files that do not exist, and nothing links the manifest
+from the page, so it cannot be added to a home screen at all. That has to be
+fixed first, and it is recorded on the pre-launch checklist.
 
 ## Risks
 

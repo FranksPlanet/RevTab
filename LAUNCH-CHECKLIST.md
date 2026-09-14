@@ -25,7 +25,7 @@ from someone qualified.
 | robots.txt | Missing | Not in `public/`. A few lines. |
 | sitemap.xml | Missing | Not in `public/`. The app is mostly behind a login, so this only matters for the public pages. |
 | Open Graph image | Missing | No route sets `og:image`. This is what appears when someone shares a link. |
-| Analytics | Missing | Nothing installed. See the cookie banner note below before choosing one. |
+| Analytics | Missing | Nothing installed. Pick a cookieless one, see below. |
 | Compressed images | Not done | A single vehicle photo in storage is 9 MB. Nothing resizes or compresses on upload. |
 
 ## Partly done
@@ -36,7 +36,8 @@ from someone qualified.
 | Meta description on every page | 5 of 14 | Missing on index, dashboard, expenses, garage, insights, onboarding, settings, the layout route and the consent page. |
 | Loading states | Partly | Known defect: the dashboard and insights screens show numbers before the data has loaded, so a confident but wrong cost per kilometre flashes up. Recorded in the August audit. |
 | Form error states | Partly | Some forms have them, not all. |
-| Favicon | Partly | `favicon.svg` exists. But `manifest.webmanifest` points at `icon-192.png` and `icon-512.png`, and neither file exists, so the app cannot be installed to a home screen. |
+| Favicon | Partly | `favicon.svg` exists. |
+| **Installable as an app** | **Broken** | `manifest.webmanifest` points at `icon-192.png` and `icon-512.png`. Neither file exists, and nothing links the manifest from the page. So the app cannot be added to a home screen at all, despite being built as an installable app from the start. Two missing image files and one line in the page head. |
 
 ## Already done
 
@@ -69,6 +70,26 @@ the two items are linked, and there is a way to avoid both: pick analytics that
 does not use cookies or identify individuals, and you need no banner at all.
 
 Decide analytics first. The banner follows from that choice.
+
+### Which cookieless analytics
+
+All of these count visits without cookies and without identifying individuals,
+so none of them triggers a consent banner.
+
+| Option | Cost | Notes |
+|---|---|---|
+| **Cloudflare Web Analytics** | Free | No cookies, no limits worth worrying about. One script tag. The obvious starting point when the question is whether anyone is using the app at all. |
+| **Plausible** | About 9 EUR a month | Cookieless, EU hosted, nicer dashboard, exportable. Worth paying for once there are enough users that you care about trends rather than existence. |
+| **Fathom** | About 14 USD a month | Similar to Plausible. |
+| **Umami** | Free to self-host | Cheapest long term, but you are then running a service, which is a job. |
+
+Recommendation: Cloudflare to begin with, because it is free and answers the only
+question that matters right now, which is whether anyone opens the app twice.
+Move to Plausible if and when the numbers are worth reading properly.
+
+Avoid Google Analytics. It sets cookies, identifies visitors, and puts you
+straight back into needing a consent banner, which is the thing this whole
+section exists to avoid.
 
 ## How this list came about
 
