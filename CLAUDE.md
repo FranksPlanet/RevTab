@@ -210,7 +210,8 @@ That has not started.
   decided on 14 September 2026 to keep them on his machine only. Do not commit
   them, and do not treat their untracked status as an oversight to tidy up.
 
-  This is a knowing exception to Principle III, and it carries the risk that
-  principle exists to prevent: these two files now live in exactly one place. If
-  the repository is ever made private, commit them immediately. Until then they
-  need a backup that is not this laptop.
+  This is a knowing exception to Principle III. The Desktop is backed up to
+  iCloud, so they are not on one machine only. Worth knowing the limit of that:
+  iCloud mirrors the current state, so a deletion or a bad edit syncs too, where
+  git would have kept the earlier version. If the repository is ever made
+  private, commit them and the exception goes away.
