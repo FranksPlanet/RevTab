@@ -62,12 +62,20 @@ the project was being parked, not worked on.
 
 ## State at the moment of parking
 
-- 14 commits are committed locally and **not pushed**. Frank has to run
-  `git push origin main` himself; this session has no git credentials.
-- **Nothing has been deployed since 3 September 2026.** The odometer fix that
-  corrects cost per kilometre is committed but not live, so the app Frank uses
-  every day still shows a headline figure that is too high. One deploy fixes it.
-  Deploying has always been Frank's call.
+- Everything is pushed. `main` is at `7900bdd` on
+  `github.com/FranksPlanet/RevTab` (the repo was renamed from `carun`).
+- **Deployed on 11 November 2026**, with Frank's go-ahead, ending the gap since
+  3 September. Lovable reports `latest_commit_sha` 7900bdd, so what is live is
+  exactly what is in git. Verified independently: `apple-touch-icon.png` serves
+  200 at 6655 bytes, matching the committed file, and the installability meta
+  tags are in the served HTML.
+- **Cost per kilometre is now correct in the live app.** The odometer fix had
+  been sitting unshipped since 25 August.
+- Publishing did not cost credits. Lovable's docs list Plan, Build and Chat
+  messages, Cloud, the AI gateway, connectors and media generation as the
+  credit-consuming actions. Publishing is not one, and the deploy went through
+  the API rather than a build message. Worth remembering: being out of build
+  credits does not stop shipping what is already built.
 - `.env` is tracked in the public repo but contains only the publishable key,
   which is designed to be public. Re-checked on 11 November. No secret is
   exposed.
