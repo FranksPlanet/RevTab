@@ -335,10 +335,14 @@ drivers who want to remove a card number. Worth knowing it has a cost: cropping
 away everything except the total also removes the station name, which is what
 powers User Story 4.
 
-**Location comes from the receipt or from the driver.** Many receipts carry the
-station address. Where they do not, the driver can enter it. The app does **not**
-record where the phone was. A location history of customers' movements is not
-something to collect quietly in a product sold on data protection.
+**Location: open, not decided.** Frank suggested receipts might carry the
+station address, which would give location without the phone ever reporting
+where it is. That needs checking against real receipts before it is a decision.
+Recorded here as a question, not a rule, because it was a suggestion and this
+document turned it into a rule too quickly once already.
+
+What is settled is narrower: if location is ever collected, it is for a named
+feature, and the driver knows. See the open question below.
 
 **The home screen shortcut works.** Frank added `revtab.lovable.app/expenses` to
 his iPhone home screen and it behaves well. It is a separate app with its own
@@ -389,8 +393,25 @@ camera. On Android, manifest shortcuts achieve this inside the installed app.
   synchronising means two devices changing the same thing, which is a far larger
   job.
 - **Reading an odometer photographed on its own**, outside this flow.
-- **Fun statistics**, for example the furthest from home a fill-up has happened,
-  once station addresses are being collected.
+- **Fun statistics**, for example the furthest from home a fill-up has happened.
+  Blocked on the open question about addresses below.
+
+## Open Question
+
+**How much should RevTab collect?** Frank is undecided between holding plenty of
+data and doing interesting things with it, and holding only what is needed and
+making privacy the point.
+
+The resolving test, proposed and not yet agreed: **every field must have a
+feature attached to it.** If the feature cannot be named, the field is not
+collected. Station name earns its place because it produces price comparison.
+The phone's location does not, because the only feature anyone has suggested for
+it is a novelty statistic.
+
+That is not "collect less". It is "collect on purpose", which is also what data
+protection law actually asks for. It would mean checking whether receipts carry
+addresses, since that would answer the question without the app ever knowing
+where its users are.
 
 ## What changed and why, 2026-11-11
 
