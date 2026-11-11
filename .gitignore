@@ -49,3 +49,6 @@ dist-ssr
 # (the GitHub repo is public and these list open weaknesses)
 AFK-REPORT.md
 AUDIT-2026-08-12.md
+
+# Local data exports (personal data, never commit - this repo is public)
+exports/

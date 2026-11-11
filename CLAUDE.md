@@ -135,6 +135,10 @@ more than any amount of confident commenting.
 
 ## Where things stand
 
+**The project was parked on 11 November 2026. Read `PARKED.md` first.**
+It records the decision to leave Lovable, the order to do it in, and where the
+verified data export lives.
+
 As of 14 September 2026:
 
 - 58 tests pass. The calculation tripwire reproduces.
