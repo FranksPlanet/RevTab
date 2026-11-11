@@ -1,419 +1,409 @@
-# Feature Specification: Pump to Desk Redesign
+# Feature Specification: Capture at the pump, review at a desk
 
 **Feature Directory**: `specs/001-pump-to-desk-redesign`
 **Created**: 2026-09-14
-**Status**: Draft. Open questions resolved 2026-09-14.
-**Input**: Reshape RevTab around two moments of use. At the petrol station the
-driver sits back in the car with a receipt and a phone, takes one photograph of
-the receipt with the odometer visible in the same frame, and the app works out
-the rest. Later, at a desk with a real screen, the same person reviews graphs
-and detail. Plus a way to see what a whole trip cost.
+**Rewritten**: 2026-11-11, after Frank described what he actually does at a
+petrol station. The earlier version was designed around assumptions that did not
+survive contact with real use. See "What changed and why" at the end.
+**Status**: Draft
 
 ## Why this exists
 
-RevTab is used in two completely different situations that today share one
-screen design.
+RevTab is used in two situations that today share one screen design.
 
-At the pump the driver has one hand, poor light, a queue behind them and about
-fifteen seconds of patience. At a desk they have time, a keyboard and space for
-charts. A layout that merely shrinks to fit a phone serves neither.
+At the pump there is a queue behind you, a receipt in your hand, and no patience
+at all. At a desk there is time, a keyboard, and room for charts. A layout that
+shrinks to fit a phone serves neither.
+
+The split is sharper than "phone and desktop". They are different activities.
+One is capture. The other is understanding. Nothing about them should be the
+same except the data underneath.
+
+## What Frank actually does today
+
+Recorded verbatim, because it is the source for everything below:
+
+> Sitting down, taking the receipt, opening a shortcut button to adding an
+> expense, taking 2 pictures, opening navigation, driving away.
+
+He does not check anything at the pump. He captures and leaves. The checking
+happens later, at a desk. RevTab is already his system of record for three cars,
+including his father's Volvo P2 which has been sold but whose history is kept.
 
 ## User Scenarios & Testing
 
-### User Story 1 - One photograph logs the fill-up (Priority: P1)
+### User Story 1 - Capture at the pump (Priority: P1)
 
-The driver returns to the car after paying, sits down, and places the receipt
-so the dashboard odometer is visible behind or beside it. They open RevTab, tap
-one obvious button, and photograph both together. The app reads the fuel amount,
-the price, the date and the odometer reading from that single image, shows what
-it understood, and saves once the driver agrees. They drive away.
+The driver gets back in the car, opens RevTab, taps one obvious button, and
+photographs two things: the receipt, then the odometer. The app says it is saved.
+They open navigation and drive away.
 
-**Why this priority**: This is the moment the product lives or dies. If logging
-a fill-up is slower than remembering to do it later, people stop logging, and an
-app with no data answers no questions. It also ships alone: it changes nothing
-about how anything is displayed elsewhere.
+Nothing is scanned. Nothing is confirmed. No number is shown. The whole
+interaction is three or four seconds and it never blocks on anything.
 
-**Independent Test**: Log a real fill-up at a real petrol station using only one
-photograph, from opening the app to the entry being saved, and confirm the fuel
-quantity, price, date and odometer are all correct without typing any of them.
+**Why this priority**: This is the moment the product lives or dies. If it is
+slower than remembering to do it later, people stop logging, and an app with no
+data answers no questions. Everything else here depends on this working.
 
-**Acceptance Scenarios**:
-
-1. Given the driver is signed in with one car, when they tap the log button,
-   then the camera opens directly, with no menu or form in between.
-1a. Given the driver has added a dedicated logging icon to their phone's home
-   screen, when they tap it, then the camera opens immediately, without passing
-   through the dashboard first.
-2. Given a photograph containing a fuel receipt and a legible odometer, when the
-   scan completes, then the fuel quantity, total price, date and odometer
-   reading are all filled in and shown for confirmation before anything is saved.
-3. Given the shown values are correct, when the driver confirms, then the expense
-   is saved against the right car and the driver is returned to a screen showing
-   their updated cost per kilometre.
-4. Given the odometer could not be read from the image, when the scan completes,
-   then the app says so plainly and asks for that one number, rather than failing
-   the whole capture or silently saving without it.
-5. Given any value was guessed rather than read with confidence, when it is shown
-   for confirmation, then it is visually marked as a guess, consistent with the
-   app's existing treatment of estimates.
-6. Given the confirmation screen, when the driver looks below the filled-in
-   values, then the photograph they just took is shown, so they can check what
-   was read against what is actually printed without leaving the screen.
-7. Given the receipt text is small, when the driver needs a closer look, then the
-   photograph can be enlarged.
-8. Given the driver has more than one car, when they open the log flow, then the
-   car is either already correct or chosen in a single tap.
-
-### User Story 2 - One receipt, several things bought (Priority: P2)
-
-Petrol station receipts are rarely just fuel. The same slip can carry a coffee,
-an ice cream, and a bottle of screenwash. The app separates those into their own
-entries and guesses a sensible category for each, so the driver corrects rather
-than types.
-
-**Why this priority**: It significantly improves accuracy of the cost split,
-which is the app's second promise after cost per kilometre. But P1 is still
-useful without it: a mixed receipt logged as one fuel entry is wrong in its
-categories while still being right about the money and the distance.
-
-**Independent Test**: Photograph a receipt containing fuel plus at least two
-non-fuel items, and confirm each item appears as its own entry with a plausible
-category, and that the totals still add up to the receipt total.
+**Independent Test**: At a real petrol station, from opening the app to the
+capture being saved, in under ten seconds, with a queue behind you.
 
 **Acceptance Scenarios**:
 
-1. Given a receipt with fuel and other items, when the scan completes, then each
-   item is listed separately with its own amount and a suggested category.
-2. Given the suggested categories, when the driver reviews them, then every
-   suggestion is marked as a guess and any one of them can be changed without
-   re-scanning.
-3. Given the individual amounts, when they are summed, then they equal the
-   receipt total, and if they do not, the driver is told before saving.
-4. Given the driver does not care about the detail right now, when they choose to
-   save it as a single entry instead, then that remains possible in one tap.
-5. Given several items were separated out, when the driver checks them, then the
-   photograph is visible alongside the list, because verifying a split is harder
-   than verifying a single number and guessing from memory is what this feature
-   exists to avoid.
+1. Given the driver opens the app, when they look at the screen, then a capture
+   action is visible immediately without navigating anywhere.
+2. Given they tap it, then the camera opens directly, with no form or menu first.
+3. Given the camera, when they photograph the receipt, then they are prompted for
+   the odometer as a second shot, and it is clear which is which.
+4. Given both photographs, when the second is taken, then the capture is saved
+   and the driver is released. No scan runs in front of them and nothing waits
+   for a network.
+5. Given there is no mobile signal, when they capture, then it still saves
+   completely, because saving two photographs needs no connection.
+6. Given the driver has more than one car, when they capture, then the car is
+   either already right or chosen in a single tap.
+7. Given a capture is saved, when the driver looks for reassurance, then the app
+   confirms it plainly, without showing figures that have not been checked yet.
 
-### User Story 3 - Reviewing at a desk (Priority: P3)
+### User Story 2 - Review at a desk (Priority: P2)
 
-At a computer, the same person explores rather than logs. Charts, per-category
-breakdowns, consumption over time and projections get the room they need,
-arranged for a large screen rather than a stretched phone layout.
+Later, with time and a real screen, the driver opens a queue of captures that
+have not been dealt with. Each one shows both photographs beside what the scanner
+read from them. They confirm, correct, or type the values in themselves.
 
-**Why this priority**: It is the part that creates understanding rather than
-data, but it depends on there being data worth exploring, which P1 provides.
-Nobody is blocked by the current screens; they are merely cramped.
+This is where the numbers change.
 
-**Independent Test**: Open the app on a desktop browser and answer, without
-scrolling past three screens, what the car cost per kilometre this year, which
-category grew fastest, and whether fuel consumption is getting worse.
+**Why this priority**: Capture without review produces photographs, not data.
+These two together are the smallest thing that replaces the old habit of
+emailing a photo to yourself and typing it into a spreadsheet.
 
-**Acceptance Scenarios**:
-
-1. Given a desktop-width screen, when the review screens load, then the layout
-   uses the available width rather than presenting a narrow phone column.
-2. Given the driver is on a phone, when they open the same screens, then they
-   remain usable, because a phone is still where most people will look.
-3. Given estimated or backfilled figures appear alongside logged ones, when they
-   are displayed, then the difference remains visually obvious.
-
-### User Story 4 - What will this trip cost? (Priority: P4)
-
-The driver is thinking about a journey they have not taken yet. They are
-planning to drive to Croatia, they know it is roughly 850 km each way, and they
-want a number before they decide. They enter the distance and the app multiplies
-it by what their car actually costs per kilometre, using their own logged data
-rather than a generic figure.
-
-**Why this priority**: It is the cheapest thing in this document and needs no new
-stored data, because it is arithmetic over a number the app already knows. It is
-also the first feature that helps before the driving rather than after it, which
-is a different kind of usefulness to everything else RevTab does.
-
-**Independent Test**: Enter a distance, see a cost, and check it by hand against
-the cost per kilometre shown on the dashboard.
+**Independent Test**: Capture three fill-ups over a week without looking at the
+app, then clear the queue in one sitting and confirm the resulting figures match
+what the receipts say.
 
 **Acceptance Scenarios**:
 
-1. Given a distance in kilometres, when the driver asks for an estimate, then the
-   app shows the expected cost, calculated from that car's own cost per kilometre.
-2. Given the app already works out three different costs per kilometre (running
-   costs only, including depreciation, and including the full purchase price),
-   when an estimate is shown, then it is clear which of the three it used, and
-   the driver can switch between them.
-3. Given the estimate is a projection rather than a record, when it is displayed,
-   then it is marked as an estimate in the same way every other projected figure
-   in the app is.
-4. Given the driver has more than one car, when they ask for an estimate, then
-   they can see what the journey would cost in each.
-5. Given a return journey, when the driver indicates as much, then the distance
-   used is doubled without them having to do the arithmetic.
+1. Given captures are waiting, when the driver opens the app anywhere, then the
+   number waiting is visible without hunting for it.
+2. Given a capture in the queue, when it is opened, then both photographs are
+   shown beside the extracted values, large enough to read and able to be
+   enlarged.
+3. Given extracted values, when any was guessed rather than read confidently,
+   then it is marked as a guess, consistent with how the app treats every other
+   estimate.
+4. Given a wrong value, when the driver corrects it, then no re-scan is needed.
+5. Given the scanner could not read something, when the driver reviews it, then
+   the app says which value is missing and asks only for that one.
+6. Given an odometer reading lower than one already logged for that car, when it
+   is reviewed, then the app questions it rather than accepting a reading that
+   would corrupt every distance figure.
+7. Given a capture is confirmed, when the driver returns to the dashboard, then
+   the figures have updated to include it.
+8. Given captures have not been reviewed, when the driver looks at any figure,
+   then those captures are **not** counted in it. Numbers in RevTab are always
+   confirmed numbers.
 
-### User Story 5 - Logging where there is no signal (Priority: P5)
+### User Story 3 - Noticing what is missing (Priority: P3)
 
-Rural forecourts and underground car parks frequently have no usable connection.
-The driver photographs the receipt as usual, fills in the numbers by hand because
-nothing can be scanned without a server, and drives away with a complete entry.
-The photograph uploads and is scanned whenever the connection returns.
+The app tells the driver when its own picture of events looks incomplete.
 
-**Why this priority**: It removes the one situation where the app simply cannot
-be used, but it is worth building only once the normal path is proven. It is also
-the largest piece of work here, and an earlier attempt at offline support was
-abandoned and deleted, so it starts from nothing.
+**Why this priority**: Small, and it protects the trustworthiness of everything
+else. A cost per kilometre built on half the fill-ups is wrong without looking
+wrong.
 
-**Independent Test**: Put the phone in aeroplane mode, log a complete fill-up,
-turn the connection back on, and confirm the entry is intact and the photograph
-has been scanned and attached.
+**Independent Test**: Log two fill-ups 900 km apart on a car that realistically
+cannot travel that far on one tank, and confirm the app raises it.
 
 **Acceptance Scenarios**:
 
-1. Given there is no connection, when the driver opens the capture flow, then
-   they are told plainly that scanning is unavailable and are offered manual
-   entry, rather than being blocked or left waiting.
-2. Given manual entry offline, when the driver saves, then the entry is complete
-   and counts towards their figures immediately, without waiting for a
-   connection.
-3. Given a queued photograph, when the connection returns, then it uploads and is
-   scanned without the driver having to remember anything.
-4. Given the scan later disagrees with what the driver typed, when that happens,
-   then the driver is shown the difference and decides, and their typed value is
-   never silently overwritten.
-5. Given an entry was made offline with an odometer reading, and other entries
-   have been logged since, when it syncs, then the app checks the reading still
-   makes sense in sequence and asks rather than corrupting the distance figures.
-6. Given something is still queued, when the driver looks at the app, then it is
-   visible that something is waiting, rather than being silently pending.
+1. Given captures sitting unreviewed, when the driver opens the app, then a clear
+   warning says how many are waiting, because unreviewed captures mean the
+   figures on screen are behind reality.
+2. Given a jump in odometer readings with no fuel logged in between that the car
+   could not plausibly cover on one tank, when the driver looks at their history,
+   then the app says it thinks a fill-up is missing, and where.
+3. Given such a warning, when the driver knows it is fine, for example the car was
+   lent out or filled by somebody else, then it can be dismissed and stays
+   dismissed.
+
+### User Story 4 - Where you fill up, and what it costs there (Priority: P4)
+
+The station name is kept as a real piece of data rather than a note. The driver
+can see where they fill up most, what they pay at each place, and how those
+prices have moved.
+
+**Why this priority**: This is the first thing in RevTab that gives advice rather
+than a record, and it needs no judgement from the app at all. It is arithmetic
+over data already being collected. It is also the cheapest advisory feature that
+will ever exist here, because the scanner **already reads the station name** and
+currently discards it into a free-text note.
+
+**Independent Test**: After ten fill-ups across at least two stations, see which
+is cheaper and by how much, and check it by hand against the receipts.
+
+**Acceptance Scenarios**:
+
+1. Given a scanned receipt, when the station is identified, then it is stored as
+   its own field, not inside a note.
+2. Given fill-ups at several stations, when the driver looks at them, then they
+   can see which they use most and the price paid at each.
+3. Given price history at a station, when it is displayed, then changes over time
+   are visible.
+4. Given two stations with a meaningful price difference, when that is shown, then
+   it is expressed as something actionable, for example what it costs over a year
+   at the driver's own rate of use.
+5. Given the station could not be read, when the driver reviews the capture, then
+   it can be entered or corrected by hand.
+6. Given the same station written differently on different receipts, when they are
+   counted, then the driver can treat them as one place.
+
+### User Story 5 - Reviewing properly at a desk (Priority: P5)
+
+Charts, category breakdowns, consumption over time and projections, arranged for a
+large screen rather than a stretched phone column.
+
+**Why this priority**: It creates understanding rather than data, but depends on
+there being data worth exploring. Nobody is blocked today, the screens are merely
+cramped.
+
+**Independent Test**: On a desktop browser, answer without scrolling past three
+screens: what the car cost per kilometre this year, which category grew fastest,
+and whether consumption is getting worse.
+
+**Acceptance Scenarios**:
+
+1. Given a desktop-width screen, when review screens load, then the layout uses
+   the width available.
+2. Given a phone, when the same screens open, then they remain usable.
+3. Given estimated figures beside logged ones, when displayed, then the difference
+   stays obvious.
+
+### User Story 6 - One receipt, several things bought (Priority: P6)
+
+A petrol station receipt is rarely only fuel. The same slip carries a coffee, an
+ice cream, a bottle of screenwash. At review time these are separated into their
+own entries with a suggested category for each.
+
+**Why this priority**: It improves the accuracy of the category split, which is
+RevTab's second promise. But a mixed receipt logged as one fuel entry still has
+the money and the distance right, so nothing is blocked without it.
+
+**Independent Test**: Review a receipt with fuel and at least two other items, and
+confirm each appears separately with a plausible category and the amounts still
+sum to the receipt total.
+
+**Acceptance Scenarios**:
+
+1. Given a receipt with several purchases, when reviewed, then each item is listed
+   separately with its own amount and a suggested category.
+2. Given those suggestions, when the driver checks them, then each is marked as a
+   guess and any can be changed.
+3. Given the separated amounts, when summed, then they equal the receipt total,
+   and the driver is told before saving if they do not.
+4. Given the driver does not care about the detail, when they choose, then it can
+   be saved as a single entry in one tap.
+5. Given several separated items, when reviewed, then the photograph stays visible
+   beside them, because checking a split from memory is not realistic.
+
+### User Story 7 - What will this trip cost? (Priority: P7)
+
+The driver is planning a journey. They enter a distance, and the app multiplies it
+by what their car actually costs per kilometre.
+
+**Why this priority**: Cheapest thing here, needs no new stored data, and it is
+the only feature that helps before the driving rather than after it.
+
+**Independent Test**: Enter a distance, see a cost, check it by hand against the
+dashboard figure.
+
+**Acceptance Scenarios**:
+
+1. Given a distance, when an estimate is requested, then the cost is shown using
+   that car's own cost per kilometre.
+2. Given the app computes three different costs per kilometre (running costs only,
+   with depreciation, with the full purchase price), when an estimate is shown,
+   then it is clear which was used and the driver can switch.
+3. Given it is a projection, when shown, then it is marked as an estimate like
+   every other projected figure.
+4. Given several cars, when estimating, then the journey can be compared across
+   them.
+5. Given a return journey, when indicated, then the distance doubles without the
+   driver doing the arithmetic.
 
 ### Edge Cases
 
-- The photograph is too dark, blurred, or the receipt is folded. The driver is
-  told what went wrong and can retake without losing their place.
-- The odometer in the frame reads lower than the last logged reading. The app
-  questions it rather than accepting a reading that would corrupt the distance
-  calculation.
-- The receipt is in a foreign language or currency, taken abroad on the kind of
-  trip User Story 4 is about.
-- There is no mobile signal on the forecourt, which is common in rural stations
-  and underground car parks. See the open question below.
-- The driver photographs the same receipt twice.
-- The receipt shows a fuel type or unit the car is not set up for, for example
-  charging in kWh on a car recorded as diesel.
+- A photograph is too dark, blurred, or the receipt is folded. Found at review,
+  not at the pump, so the driver is not stuck on a forecourt. They correct by
+  hand or retake from the original photo.
+- The odometer photograph is unreadable. The driver types four digits. This is the
+  same manual path the app needs anyway.
+- The odometer reads lower than the last logged value.
+- The receipt is foreign, in another language or currency.
+- The same receipt is captured twice.
+- A fuel type or unit the car is not set up for, for example kWh on a car recorded
+  as diesel.
+- A capture sits unreviewed for weeks, and other fill-ups are logged in the
+  meantime, so its odometer reading is now out of sequence.
+- The driver captures the receipt but forgets the odometer, or photographs the
+  same thing twice.
 
 ## Requirements
 
 ### Functional Requirements
 
-- **FR-001**: The app MUST offer a single, obvious action that goes straight to
-  the camera, reachable in one tap from opening the app.
-- **FR-001a**: Capture MUST be a page with its own address, reachable directly
-  without passing through any other screen. Today it is a dialog on top of the
-  expenses list and therefore cannot be linked to at all.
-- **FR-001b**: The app MUST keep a LOG action visible at all times on a phone, so
-  capture is never more than one tap away.
-- **FR-002**: The app MUST extract fuel quantity, total price, date and odometer
-  reading from one photograph containing both a receipt and an odometer.
-- **FR-003**: The app MUST show every extracted value for confirmation before
-  saving anything.
-- **FR-004**: The app MUST visually distinguish values it guessed from values the
-  driver entered or confirmed, and MUST carry that distinction through to any
-  figure calculated from them.
-- **FR-004a**: The app MUST show the photograph on the confirmation screen,
-  below the extracted values, and MUST allow it to be enlarged. Checking a
-  machine's reading against the paper is the only way the driver can tell whether
-  it was right, and asking them to remember what the receipt said defeats the
-  point of showing values for confirmation at all.
-- **FR-005**: The app MUST allow any extracted value to be corrected without
-  retaking the photograph.
-- **FR-006**: The app MUST continue the capture when the odometer cannot be read,
-  asking only for the missing value.
-- **FR-007**: The app MUST reject or question an odometer reading lower than the
-  most recent logged reading for that car.
-- **FR-008**: The app MUST separate a receipt containing several purchases into
-  individual entries with a suggested category for each. (P2)
-- **FR-009**: The app MUST warn when separated amounts do not sum to the receipt
-  total. (P2)
-- **FR-010**: The app MUST let the driver save a mixed receipt as one entry
-  instead of splitting it. (P2)
-- **FR-011**: Review screens MUST use the full width of a desktop display while
-  remaining usable on a phone. (P3)
-- **FR-012**: The app MUST estimate the cost of a journey from a distance the
-  driver enters, using that car's own cost per kilometre, and MUST make clear
-  which cost basis was used and that the result is an estimate. (P4)
-- **FR-015**: The app MUST allow a complete entry to be made and saved without a
-  connection, using manual entry in place of scanning. (P5)
-- **FR-016**: The app MUST queue any photograph taken offline and scan it when a
-  connection returns, without requiring the driver to act. (P5)
-- **FR-017**: The app MUST NOT overwrite a value the driver typed with one a
-  later scan produced. Where they disagree, the driver decides. (P5)
-- **FR-018**: The app MUST re-check a queued odometer reading against readings
-  logged since, before accepting it. (P5)
-- **FR-019**: The app MUST make queued, unsynced items visible to the driver. (P5)
-- **FR-013**: All figures introduced by this feature MUST be formatted through
-  the app's single formatting layer, per Constitution Principle II.
-- **FR-014**: After a successful log, the app MUST show the driver their updated
-  cost per kilometre, since that is the reason they logged it.
+- **FR-001**: Capture MUST be reachable in one tap from opening the app, and MUST
+  be a page with its own address so it can be linked to directly. Today it is a
+  dialog on top of the expenses list and cannot be linked to at all.
+- **FR-002**: Capture MUST take two photographs, the receipt and the odometer, and
+  MUST make clear which is being asked for.
+- **FR-003**: Capture MUST complete without a network connection, without running
+  a scan, and without the driver confirming anything.
+- **FR-004**: The app MUST NOT display figures derived from captures that have not
+  been reviewed.
+- **FR-005**: The app MUST show, wherever the driver is, how many captures are
+  waiting to be reviewed.
+- **FR-006**: Review MUST show both photographs beside the extracted values, and
+  MUST allow them to be enlarged.
+- **FR-007**: The app MUST visually distinguish guessed values from confirmed
+  ones, and carry that distinction into anything calculated from them.
+- **FR-008**: Any extracted value MUST be correctable without re-scanning.
+- **FR-009**: The app MUST allow a capture to be completed entirely by hand,
+  without any scan, so a driver who does not want a photograph leaving the device
+  has a complete path.
+- **FR-010**: The app MUST question an odometer reading lower than the most recent
+  confirmed reading for that car, including when a delayed review puts it out of
+  sequence.
+- **FR-011**: The app MUST warn when a gap in odometer readings suggests a fill-up
+  was never logged, and allow that warning to be dismissed permanently.
+- **FR-012**: The station MUST be stored as its own field, not inside a note.
+- **FR-013**: The app MUST show fuel price by station and how it has changed.
+- **FR-014**: Review MUST separate a receipt containing several purchases into
+  individual entries with a suggested category for each. (P6)
+- **FR-015**: The app MUST warn when separated amounts do not sum to the receipt
+  total. (P6)
+- **FR-016**: Review screens MUST use the full width of a desktop display while
+  remaining usable on a phone. (P5)
+- **FR-017**: The app MUST estimate the cost of a journey from a distance the
+  driver enters, stating which cost basis was used and that it is an estimate. (P7)
+- **FR-018**: Every figure introduced here MUST be formatted through the single
+  formatting layer, per Constitution Principle II.
+- **FR-019**: Features that send data to an AI service MUST be identifiable as
+  such in the interface.
 
 ### Non-Functional Requirements
 
-- **NFR-001**: From opening the app to a saved fill-up SHOULD take under 30
-  seconds including the scan, on a phone, one-handed.
-- **NFR-002**: The capture flow MUST be operable one-handed.
-- **NFR-003**: The scan MUST tell the driver it is working, and MUST NOT appear
-  frozen while the image is processed.
+- **NFR-001**: Capture, from opening the app to released, SHOULD take under ten
+  seconds.
+- **NFR-002**: Capture MUST be operable one-handed.
+- **NFR-003**: Capture MUST never block on a network request.
 
-## Resolved Questions
+## Decisions
 
-All three were answered by Frank on 2026-09-14.
+Settled, with reasons, so they are not relitigated.
 
-**Does capture have to work without signal? Yes, but last.** It is User Story 5,
-the lowest priority here. P1 through P4 assume a connection and must say so
-plainly when there is none.
+**Two photographs, not one frame.** The original design had the receipt and the
+odometer in a single shot. Frank tried it and it does not work in real life.
+Dashboard digits are a glowing display at an angle, and sharing a frame with a
+receipt makes both worse. Two deliberate photographs are easier to frame and far
+easier to read.
 
-The queueing itself is ordinary work. The difficulty is that scanning happens on
-the server, so offline there is nothing to confirm, which is exactly what P1
-promises. The approach chosen keeps that promise: offline, the driver types the
-numbers and the entry is complete straight away, with the photograph queued for
-scanning later. Scanning becomes a convenience rather than something the entry
-depends on. This reuses the manual path P1 already needs for an unreadable
-odometer.
+**Not the marker trick.** Frank currently writes the odometer on the receipt by
+hand before photographing it, which works well and would make this a single
+photograph. It was rejected as a design: it needs a working marker in the car,
+and an app that requires its user to bring a pen is not solving the problem.
 
-Worth knowing the history: an offline queue was built in June 2026 and deleted in
-August as dead code. It has been started and abandoned once already.
+**No confirmation at the pump.** The earlier version had the driver check
+extracted values on the forecourt within fifteen seconds. That was an assumption,
+and Frank's actual behaviour over three years contradicts it. Checking belongs at
+a desk. Removing it makes capture faster, removes all waiting, and makes offline
+capture nearly free.
 
-**Is a trip stored, or worked out? Neither.** A trip is not a record at all. It
-is a calculator: distance in, estimated cost out, based on the car's real cost
-per kilometre. Nothing new is stored, no journey is tracked, and the app never
-needs to know whether the trip actually happened. This is dramatically smaller
-than either option originally offered and is the reason P4 moved from
-"what did that cost" to "what would that cost".
+**Unreviewed captures do not count.** A number in RevTab is a confirmed number.
+The cost of this is that figures lag until the driver sits down, which is handled
+by warning them clearly rather than by quietly including unchecked data.
 
-**Are receipt photographs kept? On the device only, for now.** This keeps images
-of payment slips, which can carry the last digits of a card, out of server
-storage. Letting the driver opt in to uploading them is wanted later and is
-recorded under Future Work. The limits of device storage are under Risks, because
-it is not an archive.
+**Scanning goes directly to a chosen AI provider.** Not through Lovable's gateway,
+which currently sits between RevTab and Google and receives every receipt. On
+device scanning was considered and rejected: a cheap reader handles a creased
+thermal receipt poorly and a dashboard display worse, and the mixed-receipt split
+needs a model that understands documents, not one that reads text. The honest
+claim is therefore not "never leaves your phone" but "goes to exactly one named
+company, and you can type it in yourself instead".
+
+**Photographs are kept on the device.** Optional cropping before sending, for
+drivers who want to remove a card number. Worth knowing it has a cost: cropping
+away everything except the total also removes the station name, which is what
+powers User Story 4.
+
+**Location comes from the receipt or from the driver.** Many receipts carry the
+station address. Where they do not, the driver can enter it. The app does **not**
+record where the phone was. A location history of customers' movements is not
+something to collect quietly in a product sold on data protection.
+
+**The home screen shortcut works.** Frank added `revtab.lovable.app/expenses` to
+his iPhone home screen and it behaves well. It is a separate app with its own
+storage, so it needs signing in once, after which it stays. An earlier test was
+recorded as a failure because that one-time sign-in was mistaken for a permanent
+problem. Once capture has its own address, the same trick lands directly in the
+camera. On Android, manifest shortcuts achieve this inside the installed app.
 
 ## Assumptions
 
-Recorded where a reasonable default was chosen rather than asked about.
-
-- Extraction happens on the server, as receipt scanning does today, rather than
-  on the phone.
-- The driver confirms before anything is saved, in every case. This follows the
-  app's existing promise of honesty about estimates and prevents a
-  misread odometer silently corrupting the distance figures.
-- A car with one fuel type continues to behave exactly as it does now. Nothing
-  here changes the calculation engine, and Constitution Principle I holds: if any
-  change to the maths does become necessary, the parity tripwire must still
-  reproduce before it is considered safe.
-- The existing Expenses screen remains for entries that are not made at a pump.
+- Scanning happens on the server, as it does today.
+- A car with one fuel type behaves exactly as it does now. Nothing here changes
+  the calculation engine. If a change to the maths ever becomes necessary, the
+  parity tripwire must still reproduce before it is considered safe, per
+  Constitution Principle I.
+- The existing Expenses screen remains for entries not made at a pump.
 - Sign-in is unchanged.
-
-## Opening straight into capture
-
-Frank's idea was a second icon on the home screen going straight to the camera.
-**Tested on an iPhone 17 Pro on 2026-09-14. It does not work, and the reason is
-not fixable by us.**
-
-What was found:
-
-- Installing RevTab to the home screen works properly. It opens standalone with
-  no address bar and the icon looks right.
-- Adding a *second* page as its own icon produces a **separate app with its own
-  storage**. It asks for a login again, because it cannot see the session
-  belonging to the first icon.
-- After logging in, it redirects to the dashboard rather than the page that was
-  added.
-- Reopening it lands on the expenses list, not on the add-expense dialog.
-
-iOS gives each home screen web app its own storage container. Two icons means two
-signed-in states. Being asked for a password while sitting at a pump is worse
-than the extra tap the idea was meant to remove, so **this approach is dropped**.
-
-### What the test revealed that matters more
-
-The add-expense flow **has no address of its own**. It is a dialog that opens on
-top of the expenses list, so there is nothing to link to, bookmark, or point an
-icon at. Even with a shared session there would have been no destination.
-
-That is a real design constraint and it applies regardless of home screen icons:
-capture must become a page with its own address before it can be reached directly
-from anywhere.
-
-### What replaces it
-
-- **Capture gets its own address.** A real page, linkable, shareable, and
-  reachable without passing through the dashboard. This is required by P1 anyway.
-- **A permanently visible LOG button inside the app.** One installed app, one
-  session, one tap. Most of the benefit, none of the platform problem. It is the
-  same object as the sticky mobile call to action on the pre-launch checklist and
-  must not be built twice.
-- **Android keeps the original idea, for free.** A manifest can declare shortcuts
-  that appear on a long press of the app icon. Those run inside the same
-  installed app, so the session is shared and the problem does not arise. Worth
-  adding when capture has an address, since it costs a few lines. It does nothing
-  on iPhone, which is what Frank uses.
-
-## Showing the photograph while confirming
-
-Added on Frank's suggestion, and it costs almost nothing. The photograph is
-already on the device by the decision above, so displaying it involves no upload,
-no server round trip and no storage question.
-
-It also closes a gap in the honesty rule. The app marks guessed values as
-guesses, which tells the driver to be careful, but gives them nothing to be
-careful *with*. Putting the paper next to the numbers is what turns a warning
-into something actionable.
-
-**A better version, if it ever proves necessary.** Highlight the exact spot on
-the photograph each value came from, so a wrong figure can be traced to the line
-it was misread from. Genuinely useful for a mixed receipt with six items. It
-needs the scanner to report *where* it found each value, not just what it found,
-so it is a real increase in scope. Not required now, worth knowing the option
-exists.
-
-## Risks
-
-**Receipt photographs kept on the device are not a reliable archive.** Storage
-inside a web app can be cleared by the browser when the phone runs short of
-space, is lost if the app's data is cleared or the phone is replaced, and does
-not appear on any other device. For checking a scan a few minutes or days later,
-which is the actual need, this is fine. For finding a receipt from eight months
-ago to settle a dispute, it is not. If that second need turns out to matter, this
-decision has to be revisited rather than quietly relied upon.
-
-## Future Work
-
-Deliberately not in this feature, recorded so it is not lost.
-
-- **Uploading receipt photographs off the device.** P2 keeps them on the phone
-  only. Letting the driver opt in to storing them in the cloud, so they survive a
-  lost phone and appear on a laptop, is wanted later and is a plausible paid
-  feature, since cloud storage is the part that costs real money.
-
-  Use the word "upload" rather than "sync" deliberately. Uploading a file and
-  making it visible elsewhere is modest work. Synchronising means two devices
-  changing the same thing, conflicts, and deletions propagating, which is a much
-  larger job. Nobody should build the second while thinking they asked for the
-  first.
-- **Reading an odometer photographed on its own**, without a receipt.
 
 ## Success Criteria
 
-- Frank logs a real fill-up at a real petrol station, using one photograph, and
-  types nothing.
-- A mixed receipt produces correctly separated entries that sum to the receipt
-  total.
-- The cost per kilometre shown after logging matches what the parity tripwire
-  would produce for the same data.
-- A month later, Frank has logged every fill-up, because doing so was not
+- Frank captures a fill-up at a real station in under ten seconds, with a queue
+  behind him, and drives away without waiting for anything.
+- A week of captures is cleared from the review queue in one sitting, and the
+  resulting figures match the receipts.
+- The app correctly names a fill-up that was never logged.
+- Frank can say which of his usual stations is cheaper, and by how much a year.
+- A month later every fill-up has been captured, because capturing was not
   annoying enough to skip.
 
 ## Out of Scope
 
 - Changing how any existing figure is calculated.
-- Sign-in, account management, and billing.
-- Reading a photograph of an odometer on its own, without a receipt.
-- Automatic detection that a journey has begun, for example from location.
+- Sign-in, account management, billing.
+- Advisory features: whether to repair a car, whether to replace it, whether a
+  quote is fair. These need good records first, and this feature is the records.
+- A native iOS application.
+- Recording the phone's location.
+
+## Future Work
+
+- **Advisory layer.** Keep or replace, is this repair worth it, is this quote
+  reasonable. Explicitly sequenced after records, because an advisor working from
+  thin data gives bad advice, which is worse than none.
+- **Importing historical receipts.** Frank has two to three years of paper and
+  emailed photographs. Backfilling them would make the app immediately valuable.
+- **Uploading photographs off the device**, so they survive a lost phone and
+  appear on a laptop. Plausibly a paid feature. Note "upload", not "sync":
+  synchronising means two devices changing the same thing, which is a far larger
+  job.
+- **Reading an odometer photographed on its own**, outside this flow.
+- **Fun statistics**, for example the furthest from home a fill-up has happened,
+  once station addresses are being collected.
+
+## What changed and why, 2026-11-11
+
+The first version of this document was written from assumptions. Frank then
+described what he actually does, and most of them were wrong.
+
+- One photograph became two. The single-frame design does not work in practice.
+- Confirmation at the pump was removed entirely. He does not do it and never has.
+- Offline capture went from a large separate story to a property of capture, since
+  storing two photographs needs no connection.
+- A review queue became the centre of the design rather than an afterthought.
+- Station data was promoted from a note to a first-class feature, after it emerged
+  that the scanner already reads it and throws it away.
+- The home screen shortcut was restored after being wrongly recorded as impossible.
+
+The old version is in git history if the reasoning is ever needed.
